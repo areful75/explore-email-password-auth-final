@@ -18,7 +18,13 @@ const Login = () => {
         signInWithEmailAndPassword(auth, email, password)
             .then(result => {
                 console.log(result);
-                setSuccess(true);
+                if(!result.user.emailVerified){
+                    alert('Please verify your email before logging in.');
+                    return;
+                }
+                else{
+                    setSuccess(true);
+                }
             })
             .catch(error => {
                 console.log(error);
@@ -43,6 +49,8 @@ const Login = () => {
 
                     
                     <br />
+                    <div><a className="link link-hover">Forgot password?</a></div>
+
                     <button className="btn btn-neutral mt-4">Signup</button>
                 </form>
                 <p>New to this website?Please <Link to='/signup' className='text-green-500 underline'> Signup</Link></p>
