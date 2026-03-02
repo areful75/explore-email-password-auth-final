@@ -1,11 +1,12 @@
-import { signInWithEmailAndPassword } from 'firebase/auth';
-import React, { useState } from 'react';
+import { sendPasswordResetEmail, signInWithEmailAndPassword } from 'firebase/auth';
+import React, { useRef, useState } from 'react';
 import { auth } from '../firebase.init';
 import { Link } from 'react-router';
 
 const Login = () => {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
+    const emailRef=useRef();
 
     const handleLogin = (event) => {
         event.preventDefault();
@@ -31,6 +32,21 @@ const Login = () => {
                 setError(error.message);
             });
     }
+
+    const handleForgetPassword = () => {
+        const email = emailRef.current.value;
+        setError('');
+        sendPasswordResetEmail(auth, email)
+        .then(() => {
+            alert('Password reset email sent. Please check your inbox.');
+        })
+        .catch(error => {
+            //console.log(error);
+            setError(error.message);
+        });
+
+        
+    }
     return (
         <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0  mt-12">
             <div className="card-body">
@@ -38,7 +54,7 @@ const Login = () => {
 
                 <form onSubmit={handleLogin} >
                     <label className="label">Email</label>
-                    <input name="email" type="email" className="input" placeholder="Email" />
+                    <input ref={emailRef} name="email" type="email" className="input" placeholder="Email" />
                     <label className="label">Password</label>
                     
                         <input
@@ -49,7 +65,7 @@ const Login = () => {
 
                     
                     <br />
-                    <div><a className="link link-hover">Forgot password?</a></div>
+                    <div onClick={handleForgetPassword}><a className="link link-hover">Forgot password?</a></div>
 
                     <button className="btn btn-neutral mt-4">Signup</button>
                 </form>
